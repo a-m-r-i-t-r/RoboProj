@@ -1,5 +1,8 @@
 import lejos.hardware.Button;
 import lejos.hardware.lcd.LCD;
+import lejos.hardware.motor.BaseRegulatedMotor;
+import lejos.hardware.motor.EV3LargeRegulatedMotor;
+import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.SensorPort;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
@@ -13,9 +16,11 @@ public class Main {
 	final static String VERSION = "1.0";
 	
 	// constants
-	final static int WHEEL_DIAMTER = 56;
+	final static int WHEEL_DIA = 56;
 	final static int LINEAR_SPEED = 70;
 	final static int ANGULAR_SPEED = 50;
+	final static int AXLE_LEN = 130;
+	final static int SPEED = 200;
 
 	public static void main(String[] args) {
 		
@@ -38,6 +43,13 @@ public class Main {
 		EV3ColorSensor cs1 = new EV3ColorSensor(SensorPort.S2);
 		EV3ColorSensor cs2 = new EV3ColorSensor(SensorPort.S3);
 		NXTSoundSensor ss = new NXTSoundSensor(SensorPort.S4);
+		
+		// initializing the wheels
+		BaseRegulatedMotor mL = new EV3LargeRegulatedMotor(MotorPort.A); // left wheel in A
+		BaseRegulatedMotor mR = new EV3LargeRegulatedMotor(MotorPort.B); // right wheel in B
+				
+		mL.setSpeed(SPEED);
+		mR.setSpeed(SPEED);
 		
 		// sample providers
 		SampleProvider dm = us.getDistanceMode(); // object detection
@@ -74,7 +86,7 @@ public class Main {
 		
 		// exact average - PREFERABLE USE APPROX
 		float lightAv = ((maxL + minL)/2);
-		// approx average
+		// approx averages
 		float lightUp = lightAv + (lightAv * 0.1f);
 		float lightLo = lightAv - (lightAv * 0.1f);
 		

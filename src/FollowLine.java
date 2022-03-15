@@ -11,8 +11,18 @@ public class FollowLine implements Behavior{
 	private EV3ColorSensor light;
 	private float lightUp;
 	private float lightLo;
+	private int SPEED = 100;
+	private float[] level = new float[1];
 	
 	FollowLine(BaseRegulatedMotor mL, BaseRegulatedMotor mR, EV3ColorSensor light, float lightUp, float lightLo) {
+		this.mL = mL;
+		this.mR = mR;
+		this.light = light;
+		this.lightUp = lightUp;
+		this.lightLo = lightLo;
+		
+		mL.setSpeed(SPEED);
+		mR.setSpeed(SPEED);
 	}
 
 	@Override
@@ -22,20 +32,30 @@ public class FollowLine implements Behavior{
 
 	@Override
 	public void action() {
-//		if (floaty < (lightAverage - APPROX)) {
-//			mLeft.forward();
-//			mRight.flt();
-//		} 
-//		
-//		else if(floaty > (lightAverage + APPROX)) {
-//			mRight.forward();
-//			mLeft.flt();
-//		}
-//		
-//		else {
-//			mLeft.forward();
-//			mRight.forward();
-//		}
+		SampleProvider ll = light.getRedMode();
+		
+		while(!suppress) {
+			
+			ll.fetchSample(level, 0);
+			float floaty = level[0];
+			
+			if (floaty < lightLo) {
+				mL.forward();
+				mR.flt();
+			}
+			
+			else if (floaty > lightUp) {
+				mR.forward();
+				mL.flt();
+			}
+			
+			else {
+				mL.forward();
+				mR.forward();
+			}
+			
+		}
+		
 	}
 
 	@Override

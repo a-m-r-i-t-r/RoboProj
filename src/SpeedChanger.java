@@ -10,7 +10,7 @@ public class SpeedChanger implements Behavior{
 	private EV3ColorSensor light;
 	private int SPEED = 100;
 	
-	SpeedChanger(BaseRegulatedMotor mL, BaseRegulatedMotor mR, EV3ColorSensor light, float lightUp, float lightLo) {
+	SpeedChanger(BaseRegulatedMotor mL, BaseRegulatedMotor mR, EV3ColorSensor light) {
 		this.mL = mL;
 		this.mR = mR;
 		this.light = light;
@@ -31,13 +31,13 @@ public class SpeedChanger implements Behavior{
 		while(!suppress) {	
 			if (ll == 1) {
 
-				SPEED = SPEED * 2;
+				SPEED = SPEED * 1.2;
 				mL.setSpeed(SPEED);
 				mR.setSpeed(SPEED);
 			}
 			
 			else if (ll == 2) {
-				SPEED = SPEED / 2;
+				SPEED = SPEED / 1.2;
 				mL.setSpeed(SPEED);
 				mR.setSpeed(SPEED);
 			}

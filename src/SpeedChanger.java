@@ -1,6 +1,7 @@
 import lejos.hardware.motor.BaseRegulatedMotor;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.robotics.subsumption.Behavior;
+import lejos.robotics.SampleProvider;
 
 public class SpeedChanger implements Behavior{
 	
@@ -9,6 +10,7 @@ public class SpeedChanger implements Behavior{
 	private boolean suppress = false;
 	private EV3ColorSensor light;
 	private int SPEED = 100;
+	private float[] level = new float[1];
 	
 	SpeedChanger(BaseRegulatedMotor mL, BaseRegulatedMotor mR, EV3ColorSensor light) {
 		this.mL = mL;
@@ -26,17 +28,21 @@ public class SpeedChanger implements Behavior{
 
 	@Override
 	public void action() {
-		int ll = light.getColorID();
+		SampleProvider ll = light.getColorID();
 		
-		while(!suppress) {	
-			if (ll == 1) {
+		while(!suppress) {
+			
+			ll.fetchSample(level, 0);
+			float floaty = level[0];
+			
+			if (floaty == 1) {
 
 				SPEED = SPEED * 1.2;
 				mL.setSpeed(SPEED);
 				mR.setSpeed(SPEED);
 			}
 			
-			else if (ll == 2) {
+			else if (floaty == 2) {
 				SPEED = SPEED / 1.2;
 				mL.setSpeed(SPEED);
 				mR.setSpeed(SPEED);

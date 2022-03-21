@@ -11,7 +11,6 @@ public class FollowLine implements Behavior{
 	private EV3ColorSensor light;
 	private float lightUp;
 	private float lightLo;
-	private int SPEED = 100;
 	private float[] level = new float[1];
 	
 	FollowLine(BaseRegulatedMotor mL, BaseRegulatedMotor mR, EV3ColorSensor light, float lightUp, float lightLo) {
@@ -21,8 +20,6 @@ public class FollowLine implements Behavior{
 		this.lightUp = lightUp;
 		this.lightLo = lightLo;
 		
-		mL.setSpeed(SPEED);
-		mR.setSpeed(SPEED);
 	}
 
 	@Override

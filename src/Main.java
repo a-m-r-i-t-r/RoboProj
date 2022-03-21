@@ -8,6 +8,8 @@ import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.hardware.sensor.NXTSoundSensor;
 import lejos.robotics.SampleProvider;
+import lejos.robotics.subsumption.Arbitrator;
+import lejos.robotics.subsumption.Behavior;
 import lejos.utility.Delay;
 
 public class Main {
@@ -20,7 +22,7 @@ public class Main {
 	final static int LINEAR_SPEED = 70;
 	final static int ANGULAR_SPEED = 50;
 	final static int AXLE_LEN = 130;
-	final static int SPEED = 200;
+	final static int SPEED = 100;
 
 	public static void main(String[] args) {
 		
@@ -90,6 +92,13 @@ public class Main {
 		float lightUp = lightAv + (lightAv * 0.1f);
 		float lightLo = lightAv - (lightAv * 0.1f);
 		
+		// behaviours
+		Behavior first = new FollowLine(mL, mR, cs1, lightUp, lightLo);
+		
+		// arbitrator
+		Behavior[] behavs = {first};
+		Arbitrator arb = new Arbitrator(behavs);
+		arb.go();
 	}
 
 }

@@ -8,8 +8,12 @@ import lejos.hardware.sensor.SensorMode;
 import lejos.robotics.SampleProvider;
 import lejos.utility.Delay;
 import lejos.hardware.Button;
+import lejos.robotics.subsumption.Behavior;
 
-public class Clap {
+public class Clap implements Behavior {
+	
+	public boolean suppress = false;
+	
 	
 	public class ClapFilter implements SampleProvider {
 		
@@ -27,8 +31,72 @@ public class Clap {
 		public ClapFilter(SensorMode sound, float f, int i) {
 			
 		}
+	
+	public boolean takeControl() {
+			
+			return true;
+		}
 
-	public void main(String[] args) {
+	public void action() {
+		
+		boolean mainloop = true;
+		boolean forward = false;
+		
+		BaseRegulatedMotor mLeft = new EV3LargeRegulatedMotor(MotorPort.A);
+		BaseRegulatedMotor mRight = new EV3LargeRegulatedMotor(MotorPort.B);
+		
+		mLeft.setSpeed(500);
+		mRight.setSpeed(500);
+		
+		float[] start = new float[1];
+		
+		NXTSoundSensor sensor = new NXTSoundSensor(SensorPort.S4);
+		SensorMode sound = (SensorMode) sensor.getDBMode();
+		SampleProvider clap = new ClapFilter(sound, 0.6f, 1000);
+		
+	
+		
+		while(mainloop) {
+			 
+			clap.fetchSample(start, 0);
+			float soundy = start[0];
+			 
+			LCD.drawString("GOOOOO", 3, 3);
+			Delay.msDelay(750);
+			LCD.clear();
+			 
+			if (Button.DOWN.isDown()) {
+				mainloop = false;
+			}
+			 
+			if (soundy > 0.6) {
+				forward = true;
+			}
+				
+			while(forward) {
+				 
+				clap.fetchSample(start, 0);
+				soundy = start[0];
+				 
+				mLeft.forward();
+				mRight.forward();
+			}
+			 
+		}
+		sensor.close();
+		mLeft.close();
+		mRight.close();
+		}
+	}
+
+	public void suppress() {
+		suppress = true;
+		
+	}
+
+	
+	
+	public void action() {
 		
 		boolean mainloop = true;
 		boolean forward = false;
@@ -45,42 +113,48 @@ public class Clap {
 		SensorMode sound = (SensorMode) sensor.getDBMode();
 		SampleProvider clap = new ClapFilter(sound, 0.6f, 1000);
 		
-		while(mainloop) {
-			 
-			 clap.fetchSample(start, 0);
-			 float soundy = start[0];
-			 
-			 LCD.drawString("GOOOOO", 3, 3);
-			 Delay.msDelay(750);
-			 LCD.clear();
-			 
-			 if (Button.DOWN.isDown()) {
-				 mainloop = false;
-			 }
-			 
-			 if (soundy > 0.6) {
-				 forward = true;
-			 }
-			 
-			 while(forward) {
-				 
-				 clap.fetchSample(start, 0);
-				 soundy = start[0];
-				 
-				 mLeft.forward();
-				 mRight.forward();
-				 
-				 
-			 }
-			 
-		}
-		 sensor.close();
-		 mLeft.close();
-		 mRight.close();
-	}
-
-
 	
 		
+		while(mainloop) {
+			 
+			clap.fetchSample(start, 0);
+			float soundy = start[0];
+			 
+			LCD.drawString("GOOOOO", 3, 3);
+			Delay.msDelay(750);
+			LCD.clear();
+			 
+			if (Button.DOWN.isDown()) {
+				mainloop = false;
+			}
+			 
+			if (soundy > 0.6) {
+				forward = true;
+			}
+				
+			while(forward) {
+				 
+				clap.fetchSample(start, 0);
+				soundy = start[0];
+				 
+				mLeft.forward();
+				mRight.forward();
+			}
+			 
+		}
+		sensor.close();
+		mLeft.close();
+		mRight.close();
 	}
+		
+
+
+
+	@Override
+	public boolean takeControl() {
+		
+		return true;
+	}
+
+
 }
